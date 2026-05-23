@@ -23,17 +23,20 @@ jobs:
           distribution: temurin
           java-version: 17
 
-      - name: Make Gradle executable
-        run: chmod +x ./gradlew
+      - name: Download clean Gradle 8.9
+        run: |
+          mkdir -p .gradle-ci
+          curl -L https://services.gradle.org/distributions/gradle-8.9-bin.zip -o .gradle-ci/gradle.zip
+          unzip -q .gradle-ci/gradle.zip -d .gradle-ci
 
       - name: Build Debug APK
-        run: ./gradlew assembleDebug
+        run: ./.gradle-ci/gradle-8.9/bin/gradle assembleDebug
 
       - name: Build Release APK
-        run: ./gradlew assembleRelease
+        run: ./.gradle-ci/gradle-8.9/bin/gradle assembleRelease
 
       - name: Build Release AAB
-        run: ./gradlew bundleRelease
+        run: ./.gradle-ci/gradle-8.9/bin/gradle bundleRelease
 
       - name: Upload APK and AAB
         uses: actions/upload-artifact@v4
